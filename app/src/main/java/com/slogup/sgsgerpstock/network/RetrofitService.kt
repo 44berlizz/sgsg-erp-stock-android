@@ -1,5 +1,7 @@
 package com.slogup.sgsgerpstock.network
 
+import com.slogup.sgsgerpstock.AppManager
+import com.slogup.sgsgerpstock.SGConstants
 import com.slogup.sgsgerpstock.util.parseError
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,7 +21,7 @@ interface Request<T> {
 class RetrofitService<T> : Request<T> {
 
     interface Completion {
-        fun onSuccess(token:String? = null, response: Any?)
+        fun onSuccess(response: Any?)
         fun onError(error: SGError)
     }
 
@@ -38,12 +40,13 @@ class RetrofitService<T> : Request<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 if (response.isSuccessful) {
 
-                    val token = response.headers()["x-auth-token"]
+                    val token = response.headers()[SGConstants.Network.x_auth_token]
+                    AppManager.token = token
 
                     response.body()?.let {
-                        completion.onSuccess(token, response = it)
+                        completion.onSuccess(it)
                     } ?: run {
-                        completion.onSuccess(response = null)
+                        completion.onSuccess(null)
                     }
                 } else {
                     completion.onError(response.parseError())

@@ -6,6 +6,8 @@ import com.slogup.sgsgerpstock.network.ErrorParam
 import com.slogup.sgsgerpstock.network.RowsData
 import com.slogup.sgsgerpstock.network.SGError
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Created by jessehj on 21/03/2019.
@@ -43,7 +45,6 @@ fun String.validateMessage(validateField: ValidateField): String? {
     }
 }
 
-enum class ValidateField {
-    Email,
-    Password
-}
+fun Retrofit.Builder.addConverters(): Retrofit.Builder = this.addConverterFactory(GsonConverterFactory.create())
+
+

@@ -2,6 +2,8 @@ package com.slogup.sgsgerpstock.scene.signin
 
 import com.slogup.sgsgerpstock.R
 import com.slogup.sgsgerpstock.data.SessionAPI
+import com.slogup.sgsgerpstock.data.User
+import com.slogup.sgsgerpstock.data.repository.RoomRepository
 import com.slogup.sgsgerpstock.network.SGError
 import com.slogup.sgsgerpstock.util.ValidateField
 import com.slogup.sgsgerpstock.util.validateMessage
@@ -23,25 +25,27 @@ class SignInInteractor : SignInBusinessLogic {
 
     lateinit var presenter: SignInPresentationLogic
     private var worker = SignInWorker()
+    private val repository: RoomRepository = RoomRepository()
 
     override fun fetchSessionData(request: SignIn.SignInRequest) {
-        getEmailValidateMessage(request.email)?.let {
+
+        request.email.validateMessage(ValidateField.Email)?.let {
             presenter.presentError(it)
             return
         }
 
-        getPasswordValidateMessage(request.password)?.let {
+        request.password.validateMessage(ValidateField.Password)?.let {
             presenter.presentError(it)
             return
         }
 
         // request  ->
         SessionAPI.requestSignIn(
-            request.context,
             request.email,
             request.password,
-            object : SessionAPI.SessionCompletion {
-                override fun onSuccess() {
+            object : SessionAPI.SignInCompletion {
+                override fun onSuccess(user: User) {
+                    repository.saveUser(user)
                     presenter.presentMessage(request.context.getString(R.string.msg_success_sign_in))
                     presenter.routeToMain()
                 }
@@ -61,10 +65,4 @@ class SignInInteractor : SignInBusinessLogic {
             })
 
     }
-
-    private fun getEmailValidateMessage(email: String): String? =
-        email.validateMessage(ValidateField.Email)
-
-    private fun getPasswordValidateMessage(password: String): String? =
-        password.validateMessage(ValidateField.Password)
 }

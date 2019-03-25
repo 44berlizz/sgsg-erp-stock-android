@@ -1,25 +1,19 @@
 package com.slogup.sgsgerpstock.data
 
-import android.os.Parcelable
+import androidx.annotation.NonNull
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import java.util.jar.Attributes
 
 /**
- * Created by jessehj on 21/03/2019.
+ * Created by jessehj on 25/03/2019.
  */
 
-@Parcelize
-data class Session(
-    @SerializedName("token")
-    var token: String? = "",
-    @SerializedName("user")
-    var user: User?
-) : Parcelable
-
-@Parcelize
+@Entity(tableName = "user_table")
 data class User(
-    @SerializedName("aId")
-    val aId: String? = "",
+    @SerializedName("aId") @PrimaryKey @NonNull
+    val aId: String = "",
     @SerializedName("groupKey")
     val groupKey: String? = "",
     @SerializedName("email")
@@ -58,12 +52,12 @@ data class User(
     val createdAt: String? = "",
     @SerializedName("updatedAt")
     val updatedAt: String? = ""
-) : Parcelable
+) {
+    data class Name(
+        @SerializedName("lastName")
+        val lastName: String,
+        @SerializedName("firstName")
+        val firstName: String
+    )
+}
 
-@Parcelize
-data class Name(
-    @SerializedName("lastName")
-    val lastName: String,
-    @SerializedName("firstName")
-    val firstName: String
-) : Parcelable

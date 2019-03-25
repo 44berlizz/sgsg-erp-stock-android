@@ -9,11 +9,16 @@ import java.util.regex.Pattern
 
 object ValidateUtils {
     fun isValidEmail(email: String) : Boolean {
-        val pattern = Pattern.compile(SGConstants.Regex.email_format)
+        val pattern = Pattern.compile(SGConstants.RegEx.email_format)
         return pattern.matcher(email).matches()
     }
 
     fun isValidPassword(password: String) : Boolean {
         return password.length >= 8
     }
+}
+
+enum class ValidateField {
+    Email,
+    Password
 }
